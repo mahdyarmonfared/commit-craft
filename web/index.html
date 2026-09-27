@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CommitCraft — Conventional Commits Studio</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2306b6d4'><path d='M12 2a10 10 0 100 20 10 10 0 000-20zm1 14.59L8.71 12.3a1 1 0 111.42-1.42L13 13.76l4.88-4.88a1 1 0 111.42 1.42L13 16.59z'/></svg>">
+</head>
+<body class="theme-dark">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="brand">
+        <svg class="brand-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"></circle>
+          <line x1="1.05" y1="12" x2="7" y2="12"></line>
+          <line x1="17.01" y1="12" x2="22.96" y2="12"></line>
+        </svg>
+        <span class="brand-name">Commit<span class="brand-accent">Craft</span></span>
+        <span class="port-badge">PORT 3009</span>
+      </div>
+
+      <div class="repo-chip" id="repoChip" title="Active Git Repository Status">
+        <span class="chip-dot"></span>
+        <span id="repoBranch">Inspecting Git branch…</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button id="btnChangelogModal" class="action-btn btn-secondary" title="View generated changelog">
+        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span>Changelog</span>
+      </button>
+
+      <button id="btnRefresh" class="action-btn btn-secondary" title="Refresh Git status">
+        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span>Refresh</span>
+      </button>
+
+      <button id="btnThemeToggle" class="icon-btn" title="Toggle Dark/Light Mode">
+        <svg id="iconSun" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="iconMoon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Workspace Grid -->
+  <main class="workspace-grid">
+    <!-- Left Column: Form Controls -->
+    <section class="form-column">
+      <div class="panel-box">
+        <h2 class="panel-title">1. Commit Type</h2>
+        <div class="type-grid" id="typeGrid">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <div class="label-row">
+              <label for="inputScope">Scope <span class="text-muted">(Optional)</span></label>
+              <div id="scopeSuggestions" class="scope-tags"></div>
+            </div>
+            <input type="text" id="inputScope" class="text-input" placeholder="e.g. auth, api, ui, parser">
+          </div>
+
+          <div class="form-group flex-checkbox">
+            <label class="checkbox-label" title="Enable Gitmoji in commit header">
+              <input type="checkbox" id="chkGitmoji">
+              <span>Use Gitmoji</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <label for="inputDesc">Short Description <span class="text-danger">*</span></label>
+            <span id="charCount" class="char-count">0 / 72</span>
+          </div>
+          <input type="text" id="inputDesc" class="text-input" placeholder="imperative mood, e.g. add user profile picture upload">
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="chkBreaking">
+            <span class="text-danger font-semibold">⚠️ BREAKING CHANGE</span>
+          </label>
+          <input type="text" id="inputBreakingDesc" class="text-input mt-2" placeholder="Describe the breaking API change or migration path…" style="display: none;">
+        </div>
+
+        <div class="form-group">
+          <label for="inputBody">Detailed Body <span class="text-muted">(Optional)</span></label>
+          <textarea id="inputBody" class="textarea-input" rows="3" placeholder="Explain the motivation and context behind this change…"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="inputIssues">Issue Reference <span class="text-muted">(Optional)</span></label>
+            <input type="text" id="inputIssues" class="text-input" placeholder="e.g. #123, Closes #42">
+          </div>
+
+          <div class="form-group flex-1">
+            <label for="inputCoAuthor">Co-Author <span class="text-muted">(Optional)</span></label>
+            <input type="text" id="inputCoAuthor" class="text-input" placeholder="Name <email@example.com>">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Live Preview & Actions -->
+    <section class="preview-column">
+      <!-- Live Preview Card -->
+      <div class="panel-box">
+        <div class="panel-header-inline">
+          <h2 class="panel-title">Formatted Commit Preview</h2>
+          <div class="preview-actions">
+            <button id="btnCopyPreview" class="action-btn btn-secondary btn-sm" title="Copy to clipboard">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span>Copy</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="commit-preview-box">
+          <pre id="commitPreview" class="commit-text">feat: add initial feature</pre>
+        </div>
+
+        <!-- Linter Feedback Card -->
+        <div id="lintReport" class="lint-report">
+          <div class="lint-status status-valid">
+            <span class="lint-icon">✔</span>
+            <span class="lint-text">Valid Conventional Commit</span>
+          </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="commit-action-bar">
+          <label class="checkbox-label" title="Stage all modified files before committing">
+            <input type="checkbox" id="chkStageAll">
+            <span>Stage all modified files (<code class="inline-code">git add -A</code>)</span>
+          </label>
+
+          <button id="btnCommit" class="action-btn btn-primary" title="Execute git commit">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Commit Changes</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Git Working Tree Card -->
+      <div class="panel-box mt-4">
+        <div class="panel-header-inline">
+          <h2 class="panel-title">Git Working Tree</h2>
+          <span id="stagedCountBadge" class="badge-count">0 Staged</span>
+        </div>
+
+        <div id="stagedFilesList" class="staged-files-list">
+          <div class="empty-state">No changes detected in repository.</div>
+        </div>
+      </div>
+
+      <!-- Recent History Card -->
+      <div class="panel-box mt-4">
+        <h2 class="panel-title">Recent Commit History</h2>
+        <div id="historyList" class="history-list">
+          <div class="empty-state">Loading recent commits…</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Changelog Modal -->
+  <dialog id="changelogModal" class="modal">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title">Release Changelog</h3>
+        <button id="btnCloseChangelogModal" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <pre id="changelogContent" class="changelog-pre">Loading changelog…</pre>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCopyChangelog" class="action-btn btn-secondary">Copy Markdown</button>
+        <button id="btnCloseChangelog" class="action-btn btn-primary">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{
+  "name": "commit-craft",
+  "version": "1.0.0",
+  "description": "Interactive CLI and real-time Web companion for authoring standardized Conventional Commits, git hook automation, and changelog drafting.",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "commit-craft": "./bin/commit-craft.js",
+    "craft": "./bin/commit-craft.js"
+  },
+  "scripts": {
+    "start": "node ./bin/commit-craft.js ui",
+    "ui": "node ./bin/commit-craft.js ui",
+    "test": "node --test tests/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mahdyarmonfared/commit-craft.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mahdyarmonfared/commit-craft/issues"
+  },
+  "homepage": "https://github.com/mahdyarmonfared/commit-craft#readme",
+  "keywords": [
+    "conventional-commits",
+    "git",
+    "commit",
+    "cli",
+    "gitmoji",
+    "git-hooks",
+    "changelog",
+    "developer-tools",
+    "productivity"
+  ],
+  "author": "Mahdyar Monfared (https://github.com/mahdyarmonfared)",
+  "license": "MIT"
+}
